@@ -4,15 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Leonida Trophy Guide — GTA VI · All 55 PS5 Trophies</title>
-<meta name="description" content="A complete, offline trophy guide for Grand Theft Auto VI on PS5: all 55 trophies, a platinum roadmap, a progress tracker and a guide for every trophy.">
+<meta name="description" content="A complete, offline trophy guide for Grand Theft Auto VI on PS5: all 55 trophies with official names, descriptions and grades, a cited guide for each, a platinum roadmap, a missable watch list and a tracker that saves your progress.">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrap">
   <header class="hero">
-    <div class="eyebrow">Grand Theft Auto VI &middot; PlayStation 5 &middot; Leonida</div>
-    <h1>Leonida <span class="vice">Trophy Guide</span></h1>
-    <p class="subtitle">All 55 GTA VI trophies — 1 platinum, 2 gold, 6 silver, 46 bronze — with a guide for each one, a platinum roadmap and a tracker that saves your progress on this device. Fully offline: no accounts, no network, no official artwork.</p>
+    <div class="eyebrow">Grand Theft Auto VI &middot; PlayStation 5 &middot; Leonida &middot; offline guide &amp; tracker</div>
+    <h1>Leonida <span class="vice">Trophy Guide</span> <span class="h1-sub">— all 55 trophies, every guide cited</span></h1>
+    <p class="subtitle">1 platinum, 2 gold, 6 silver, 46 bronze. Every trophy with its official name, description and grade, a guide in our own words that names its source, a four-stage road to the platinum and a tracker that saves your progress on this device. No accounts, no network, no official artwork.</p>
+    <div class="audit" id="audit" aria-label="Data audit"></div>
     <div class="stats">
       <div class="progress-wrap">
         <div class="progress-label"><span id="progress-text">0 of 55 earned</span><strong id="progress-pct">0%</strong></div>
@@ -22,40 +23,8 @@
     </div>
   </header>
 
-  <section class="roadmap" aria-labelledby="roadmap-h">
-    <h2 id="roadmap-h">Road to the platinum: Vice Got a Price!</h2>
-    <p class="lede">Around 200 hours, one playthrough, no online trophies and no mission medals. The story is 5 chapters and takes roughly 60–80 hours; the 100% checklist is the long grind after it.</p>
-    <div class="stages">
-      <article class="stage">
-        <h3>Stage 1 — Play the story</h3>
-        <div class="hours">60–80 hours &middot; Chapters 1–5</div>
-        <p>Finish all 5 chapters and the story trophies unlock as you go — <b>none of them can be missed</b>. Scan vehicles and study animals whenever you see them; progress already counts toward 100%.</p>
-        <span class="flag">⚠ Only missable step: Positive Mental Attitude</span>
-        <p>During <b>Chapter 1</b>, after the mission Down to Earth, talk to Lucia in the kitchen in the morning, follow her to the balcony and accept the meditation. It is gone for good after Chapter 1, and it is still unconfirmed whether it is required — do it to be safe.</p>
-      </article>
-      <article class="stage">
-        <h3>Stage 2 — 100% completion</h3>
-        <div class="hours">~100 hours &middot; after the story</div>
-        <p>The checklist unlocks under <b>Progress &gt; Stats &gt; 100% Completion</b>. It is lenient — closer to 60% of true completion. You need any 70 of 80 challenges, 200 of 277 vehicles scanned, 100 of 255 animals studied and 300 stunts; only robberies, underwater finds, shooting ranges, drone races and Bret&rsquo;s quests need everything.</p>
-        <p>Nothing here is missable. This stage earns <b>A Long Road</b> (gold) and most of the activity trophies on the way.</p>
-      </article>
-      <article class="stage">
-        <h3>Stage 3 — Strangers &amp; cleanup</h3>
-        <div class="hours">~10 hours &middot; free-roam</div>
-        <p>Finish the 8 <b>Strangers &amp; Freaks</b> strands, the remaining questlines (Andy, Kenton, Billy, Randy, Tyrone, Bret), the money trophies and any collectibles left — meditations, card sets, WAiNK scans, garages and vehicle registrations.</p>
-        <p>Every quest giver stays available after the story, so nothing here can lock you out.</p>
-      </article>
-      <article class="stage">
-        <h3>Stage 4 — Platinum</h3>
-        <div class="hours">Vice Got a Price!</div>
-        <p>When the other 54 trophies are earned, the platinum pops automatically. Before you celebrate: keep a manual save at the start of every chapter — there is <b>no mission replay</b> — and never turn on a cheat, because cheats disable trophies and saving.</p>
-        <p>15 manual save slots, 1 autosave slot. Use them.</p>
-      </article>
-    </div>
-  </section>
-
   <div class="toolbar">
-    <input type="search" id="search" placeholder="Search trophies, guides…" aria-label="Search trophies">
+    <input type="search" id="search" placeholder="Search trophies, guides, chapters…" aria-label="Search trophies">
     <div class="kinds" role="group" aria-label="Filter by kind">
       <button type="button" data-kind="all" aria-pressed="true">All</button>
       <button type="button" data-kind="story" aria-pressed="false">Story</button>
@@ -71,6 +40,13 @@
       <option value="silver">Silver</option>
       <option value="bronze">Bronze</option>
     </select>
+    <select id="stage" aria-label="Filter by roadmap stage">
+      <option value="all">All stages</option>
+      <option value="1">Stage 1 — Story</option>
+      <option value="2">Stage 2 — 100%</option>
+      <option value="3">Stage 3 — Cleanup</option>
+      <option value="4">Stage 4 — Platinum</option>
+    </select>
     <label class="spoiler"><input type="checkbox" id="spoilers" checked> Hide story spoilers</label>
     <button class="btn" id="export" type="button">Export progress</button>
     <label class="import-label btn">Import progress <input id="import" type="file" accept="application/json,.json"></label>
@@ -84,10 +60,42 @@
   <main class="grid" id="grid"></main>
   <div class="empty" id="empty" hidden></div>
 
-  <footer>
-    <p><b>About the list:</b> trophy names and descriptions are the official ones as published on PlayStation Network (via Exophase, cross-checked with PSNProfiles), list as of 18 November 2026. 27 trophies are visible from the start; 28 stay hidden until earned — this guide hides those names and descriptions behind the spoiler toggle until you tick them off.</p>
-    <p><b>About the guides:</b> every guide is written in our own words. Where a method is not yet confirmed by any source — In The Beginning…, Bad Luck, I Guess and Ten Pin — the guide says so plainly instead of guessing. Guide facts draw on PowerPyx&rsquo;s GTA 6 trophy guide and roadmap.</p>
-    <p><b>Offline:</b> this page loads nothing from the network. Your ticks are stored only in this browser (localStorage) and can be exported to a file.</p>
+  <section class="watchlist" id="watchlist" aria-labelledby="watch-h">
+    <h2 id="watch-h">Missable watch list</h2>
+    <p class="lede">One trophy is reported as possibly missable. Everything else on the list is confirmed safe to leave for free-roam after the story — the items players worry about most are listed below so you can stop worrying about them.</p>
+    <div class="watch-grid">
+      <article class="watch-card danger">
+        <h3>⚠ Possibly missable — do this in Chapter 1</h3>
+        <p class="watch-name">Positive Mental Attitude <span class="badge bronze">bronze</span></p>
+        <p>Meditate at every spot across Leonida — 18 spots at 10 locations. The first meditation is the trap: after the Chapter 1 mission <b>Down to Earth</b>, talk to Lucia in the kitchen in the morning, follow her to the balcony and accept the meditation. It is gone for good after Chapter 1, and it is still unconfirmed whether it is required — PowerPyx did it and earned the trophy, so do it to be safe.</p>
+        <p class="watch-src">Source: PowerPyx, GTA 6 Trophy Guide &amp; Roadmap, 18 Nov 2026 · the only missable PowerPyx flags.</p>
+      </article>
+      <article class="watch-card safe">
+        <h3>✓ Confirmed safe — nothing to rush</h3>
+        <ul>
+          <li><b>All 12 story trophies</b> — automatic on finishing chapters and missions; none can be missed. <span class="mini-src">PowerPyx, 18 Nov 2026</span></li>
+          <li><b>Every character questline</b> (Andy, Kenton, Billy, Randy, Tyrone, Bret) — quest givers stay available after the story. <span class="mini-src">PowerPyx, 18 Nov 2026</span></li>
+          <li><b>Strangers &amp; Freaks</b> (8 strands) — not part of the 100% checklist and all doable in free-roam. <span class="mini-src">PowerPyx, 18 Nov 2026</span></li>
+          <li><b>100% checklist items</b> — vehicles, animals, challenges, stunts, robberies, vaults: all available after the credits. <span class="mini-src">PowerPyx, 18 Nov 2026</span></li>
+          <li><b>Bank vaults &amp; armored trucks</b> — unlock in Chapter 4 and stay open in free-roam. <span class="mini-src">PowerPyx, 18 Nov 2026</span></li>
+        </ul>
+      </article>
+    </div>
+    <p class="watch-note">No mission replay exists, so keep a manual save at the start of every chapter anyway (15 manual save slots, 1 autosave) — and never turn on a cheat, because cheats disable trophies and saving. <span class="mini-src">PowerPyx, 18 Nov 2026</span></p>
+  </section>
+
+  <section class="roadmap" id="roadmap" aria-labelledby="roadmap-h">
+    <h2 id="roadmap-h">Road to the platinum: Vice Got a Price!</h2>
+    <p class="lede">Around 200 hours, one playthrough, no online trophies and no mission medals. Difficulty 4/10 (PowerPyx, 18 Nov 2026). Every trophy below sits in the stage where you earn it — 19 in the story, 10 on the 100% checklist, 25 in cleanup, then the platinum.</p>
+    <div class="stages" id="stages"></div>
+  </section>
+
+  <footer id="sources">
+    <h2>Sources &amp; how this guide was checked</h2>
+    <ul class="source-list" id="source-list"></ul>
+    <p><b>About the list:</b> trophy names and descriptions are the official ones as published on PlayStation Network (Exophase list, read 18 Nov 2026, cross-checked with PSNProfiles and TrueTrophies). 27 trophies are visible from the start; 28 stay hidden until earned — this guide hides those names and descriptions behind the spoiler toggle until you tick them off.</p>
+    <p><b>About the guides:</b> every guide is written in our own words and names the source its facts draw on. Where no method is confirmed yet — <b>In The Beginning…</b>, <b>Bad Luck, I Guess</b> and <b>Ten Pin</b> — the guide says so plainly instead of guessing. Guide facts draw on PowerPyx&rsquo;s GTA 6 trophy guide and roadmap (18 Nov 2026).</p>
+    <p><b>Offline:</b> this page loads nothing from the network. Your ticks are stored only in this browser (localStorage) and can be exported to a file. Links to sources open only if you follow them.</p>
   </footer>
 </div>
 
