@@ -50,6 +50,7 @@
     <label class="spoiler"><input type="checkbox" id="spoilers" checked> Hide story spoilers</label>
     <button class="btn" id="export" type="button">Export progress</button>
     <label class="import-label btn">Import progress <input id="import" type="file" accept="application/json,.json"></label>
+    <button class="btn" id="print" type="button">Print checklist</button>
     <button class="btn" id="reset" type="button">Reset</button>
   </div>
 
@@ -84,9 +85,20 @@
     <p class="watch-note">No mission replay exists, so keep a manual save at the start of every chapter anyway (15 manual save slots, 1 autosave) — and never turn on a cheat, because cheats disable trophies and saving. <span class="mini-src">PowerPyx, 18 Nov 2026</span></p>
   </section>
 
+  <section class="checklist100" id="checklist100" aria-labelledby="c100-h">
+    <h2 id="c100-h">The 100% checklist — exact counts</h2>
+    <p class="lede">This is what A Long Road actually needs. The checklist unlocks after the story under Progress &gt; Stats &gt; 100% Completion — and it is lenient: PowerPyx puts it near 60% of true completion, because most side quests are not required and most counts are "any N of M". The rows that say "all" are the only ones that need everything.</p>
+    <table class="c100-table" id="c100-table">
+      <thead><tr><th>Requirement</th><th>Needed</th><th>How to track it</th></tr></thead>
+      <tbody id="c100-body"></tbody>
+    </table>
+    <p class="watch-note">Source: PowerPyx, GTA 6 Trophy Guide &amp; Roadmap, 18 Nov 2026 — the 100% requirements and the "any N of M" counts are from its A Long Road guide. Nothing toward 100% is missable.</p>
+  </section>
+
   <section class="roadmap" id="roadmap" aria-labelledby="roadmap-h">
     <h2 id="roadmap-h">Road to the platinum: Vice Got a Price!</h2>
-    <p class="lede">Around 200 hours, one playthrough, no online trophies and no mission medals. Difficulty 4/10 (PowerPyx, 18 Nov 2026). Every trophy below sits in the stage where you earn it — 19 in the story, 10 on the 100% checklist, 25 in cleanup, then the platinum.</p>
+    <p class="lede">Around 200 hours, one playthrough, no online trophies and no mission medals. Difficulty 4/10 (PowerPyx, 18 Nov 2026). Play in this order — the path below is the order the trophies are meant to be earned in, and each step shows how many of its trophies you already have.</p>
+    <ol class="path" id="path"></ol>
     <div class="stages" id="stages"></div>
   </section>
 
@@ -94,7 +106,7 @@
     <h2>Sources &amp; how this guide was checked</h2>
     <ul class="source-list" id="source-list"></ul>
     <p><b>About the list:</b> trophy names and descriptions are the official ones as published on PlayStation Network (Exophase list, read 18 Nov 2026, cross-checked with PSNProfiles and TrueTrophies). 27 trophies are visible from the start; 28 stay hidden until earned — this guide hides those names and descriptions behind the spoiler toggle until you tick them off.</p>
-    <p><b>About the guides:</b> every guide is written in our own words and names the source its facts draw on. Where no method is confirmed yet — <b>In The Beginning…</b>, <b>Bad Luck, I Guess</b> and <b>Ten Pin</b> — the guide says so plainly instead of guessing. Guide facts draw on PowerPyx&rsquo;s GTA 6 trophy guide and roadmap (18 Nov 2026).</p>
+    <p><b>About the guides:</b> every guide is written in our own words and names the source its facts draw on — and every guide now has numbered steps, plus our own difficulty (1–5) and time estimate for planning. Where no method is confirmed yet — <b>In The Beginning…</b>, <b>Bad Luck, I Guess</b> and <b>Ten Pin</b> — the guide says so plainly instead of guessing, and those three carry no difficulty or time estimate. Guide facts draw on PowerPyx&rsquo;s GTA 6 trophy guide and roadmap (18 Nov 2026).</p>
     <p><b>Offline:</b> this page loads nothing from the network. Your ticks are stored only in this browser (localStorage) and can be exported to a file. Links to sources open only if you follow them.</p>
   </footer>
 </div>

@@ -4,11 +4,13 @@
 // plain files, no build step, nothing fetched over the network. Before staging it,
 // this program validates the data the judge will check: all 55 official trophies
 // named exactly once, each with a non-blank guide, a valid grade and a roadmap
-// stage, plus 3 or 4 screenshots inside the size cap. Then it copies app/ and
-// screenshots/ from beside this file into the output directory and writes
-// dossier.json there with the vendored make.fun library, using the same caps the
-// scorer enforces (at most 4 screenshots of at most 256 KiB each, at most
-// 993 entries and 48 MiB inside app/).
+// stage, plus numbered steps, a difficulty estimate (1–5, or none for the 3
+// trophies with no confirmed method) and a time estimate on each, the 100%
+// checklist table and the ordered platinum path covering all 55, plus 3 or 4
+// screenshots inside the size cap. Then it copies app/ and screenshots/ from
+// beside this file into the output directory and writes dossier.json there with
+// the vendored make.fun library, using the same caps the scorer enforces (at most
+// 4 screenshots of at most 256 KiB each, at most 993 entries and 48 MiB inside app/).
 //
 // Leave vendor/makefun-frontend.ts untouched: the scorer requires dossier.json to be
 // byte for byte what its own copy of that library writes.
@@ -42,6 +44,8 @@ function validateGuideData() {
   const names = new Set();
   let cited = 0;
   let unconfirmed = 0;
+  let stepped = 0;
+  let estimated = 0;
   for (const t of trophies) {
     if (typeof t.name !== 'string' || !t.name.trim()) fail(`trophy ${t.id} has no name`);
     if (names.has(t.name)) fail(`duplicate trophy name: ${t.name}`);
@@ -52,9 +56,47 @@ function validateGuideData() {
     if (![1, 2, 3, 4].includes(t.stage)) fail(`${t.name}: no roadmap stage`);
     if (typeof t.source === 'string' && t.source.trim()) cited += 1;
     if (t.status === 'unconfirmed') unconfirmed += 1;
+    // Round 3: every guide has numbered steps, and every trophy with a
+    // confirmed method has our difficulty (1–5) and time estimates.
+    if (!Array.isArray(t.steps) || t.steps.length < 1 || t.steps.some((s) => typeof s !== 'string' || !s.trim())) {
+      fail(`${t.name}: no step-by-step guide`);
+    }
+    stepped += 1;
+    if (typeof t.time !== 'string' || !t.time.trim()) fail(`${t.name}: no time estimate`);
+    if (t.status === 'unconfirmed') {
+      if (t.difficulty != null) fail(`${t.name}: unconfirmed trophy must not carry a difficulty estimate`);
+    } else {
+      if (!Number.isInteger(t.difficulty) || t.difficulty < 1 || t.difficulty > 5) {
+        fail(`${t.name}: bad difficulty ${t.difficulty}`);
+      }
+      estimated += 1;
+    }
   }
   const byStage = [1, 2, 3, 4].map((n) => trophies.filter((t) => t.stage === n).length);
-  return { total: trophies.length, cited, unconfirmed, byStage };
+  // Round 3: the 100% checklist table and the ordered platinum path.
+  const c100 = doc.checklist100;
+  if (!Array.isArray(c100) || c100.length < 8) fail('checklist100 table is missing or too short');
+  for (const row of c100) {
+    if (typeof row.item !== 'string' || !row.item.trim() || typeof row.required !== 'string' || !row.required.trim() || typeof row.note !== 'string' || !row.note.trim()) {
+      fail('checklist100 has an incomplete row');
+    }
+  }
+  const path = doc.path;
+  if (!Array.isArray(path) || path.length < 6) fail('platinum path is missing or too short');
+  const ids = new Set(trophies.map((t) => t.id));
+  const covered = new Set();
+  for (const step of path) {
+    if (typeof step.title !== 'string' || !step.title.trim() || typeof step.detail !== 'string' || !step.detail.trim()) {
+      fail('platinum path has an incomplete step');
+    }
+    if (!Array.isArray(step.trophies) || step.trophies.length < 1) fail(`path step "${step.title}" names no trophies`);
+    for (const id of step.trophies) {
+      if (!ids.has(id)) fail(`path step "${step.title}" names unknown trophy ${id}`);
+      covered.add(id);
+    }
+  }
+  if (covered.size !== 55) fail(`platinum path covers ${covered.size} of 55 trophies`);
+  return { total: trophies.length, cited, unconfirmed, byStage, stepped, estimated, c100: c100.length, pathSteps: path.length };
 }
 
 function validateScreenshots() {
@@ -93,6 +135,8 @@ writeFileSync(
 
 console.log(
   `Leonida Trophy Guide: ${data.total} trophies, ${data.cited} cited guides, ` +
+  `${data.stepped} step-by-step guides, ${data.estimated} difficulty + time estimates, ` +
+  `${data.c100} 100% checklist rows, ${data.pathSteps} platinum-path steps, ` +
   `${data.unconfirmed} unconfirmed methods, stages ${data.byStage.join('/')}, ` +
   `${shots.length} screenshots — dossier written to ${outDir}`,
 );

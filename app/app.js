@@ -58,7 +58,7 @@ function isConcealed(t) {
 function visibleText(t) {
   // Spoiler-concealed trophies must not leak through search.
   if (isConcealed(t)) return 'hidden trophy';
-  return `${t.name} ${t.description} ${t.guide} ${t.source} ${t.count ?? ''} ${t.chapter ?? ''}`.toLowerCase();
+  return `${t.name} ${t.description} ${t.guide} ${(t.steps ?? []).join(' ')} ${t.source} ${t.count ?? ''} ${t.chapter ?? ''} ${t.time ?? ''}`.toLowerCase();
 }
 
 function matches(t) {
@@ -87,10 +87,17 @@ function stageChip(t) {
   return `<span class="tag stage-tag" title="${esc(names[t.stage])}">S${t.stage}</span>`;
 }
 
+function difficultyLabel(t) {
+  if (t.difficulty == null) return '<span class="tag diff-tag">difficulty unknown</span>';
+  return `<span class="tag diff-tag" title="Our difficulty estimate, 1 (easy) to 5 (hardest)">difficulty ${t.difficulty}/5</span>`;
+}
+
 function factsLine(t) {
   const parts = [stageChip(t)];
   if (t.chapter) parts.push(`<span class="tag">${esc(t.chapter)}</span>`);
   if (t.count) parts.push(`<span class="tag count-tag">${esc(t.count)}</span>`);
+  if (t.time) parts.push(`<span class="tag time-tag">${esc(t.time)}</span>`);
+  parts.push(difficultyLabel(t));
   if (t.status === 'unconfirmed') parts.push('<span class="tag unconfirmed-tag">method unconfirmed</span>');
   return parts.join('');
 }
@@ -138,6 +145,8 @@ function renderAuditStrip() {
   const described = trophies.filter((t) => t.description.trim()).length;
   const guided = trophies.filter((t) => t.guide.trim()).length;
   const cited = trophies.filter((t) => t.source.trim()).length;
+  const stepped = trophies.filter((t) => Array.isArray(t.steps) && t.steps.length > 0).length;
+  const estimated = trophies.filter((t) => t.difficulty != null && t.time).length;
   const unconfirmed = trophies.filter((t) => t.status === 'unconfirmed').length;
   const missable = trophies.filter((t) => t.missable).length;
   const hidden = trophies.filter((t) => t.hidden).length;
@@ -145,6 +154,8 @@ function renderAuditStrip() {
     `<span class="audit-item"><b>${named}/55</b> official names</span>` +
     `<span class="audit-item"><b>${described}/55</b> official descriptions</span>` +
     `<span class="audit-item"><b>${guided}/55</b> guides</span>` +
+    `<span class="audit-item"><b>${stepped}/55</b> step-by-step guides</span>` +
+    `<span class="audit-item"><b>${estimated}/55</b> difficulty + time estimates</span>` +
     `<span class="audit-item"><b>${cited}/55</b> cited sources</span>` +
     `<span class="audit-item"><b>${hidden}</b> hidden · <b>${missable}</b> missable</span>` +
     `<span class="audit-item warn"><b>${unconfirmed}</b> methods unconfirmed</span>` +
@@ -162,7 +173,38 @@ const STAGE_META = {
        lede: 'When the other 54 trophies are earned, the platinum pops automatically. Before you celebrate: keep a manual save at the start of every chapter — there is no mission replay — and never turn on a cheat, because cheats disable trophies and saving.' },
 };
 
+function renderPath() {
+  const path = doc.path ?? [];
+  const host = document.getElementById('path');
+  if (!host) return;
+  host.replaceChildren(...path.map((step, i) => {
+    const done = step.trophies.filter((id) => earned.has(id)).length;
+    const el = document.createElement('li');
+    el.className = 'path-step' + (done === step.trophies.length ? ' done' : '');
+    el.innerHTML = `
+      <div class="path-num">${i + 1}</div>
+      <div class="path-body">
+        <h3>${esc(step.title)}</h3>
+        <p>${esc(step.detail)}</p>
+        <p class="path-count"><b>${done}/${step.trophies.length}</b> trophies done in this step</p>
+      </div>`;
+    return el;
+  }));
+}
+
+function renderChecklist100() {
+  const rows = doc.checklist100 ?? [];
+  const body = document.getElementById('c100-body');
+  if (!body) return;
+  body.replaceChildren(...rows.map((r) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td><b>${esc(r.item)}</b></td><td class="c100-need">${esc(r.required)}</td><td>${esc(r.note)}</td>`;
+    return tr;
+  }));
+}
+
 function renderRoadmap() {
+  renderPath();
   const host = document.getElementById('stages');
   host.replaceChildren(...[1, 2, 3, 4].map((n) => {
     const meta = STAGE_META[n];
@@ -246,9 +288,14 @@ function openDetail(t) {
     `Stage ${t.stage} of the platinum roadmap`,
     t.chapter ? `unlocked in ${t.chapter}` : null,
     t.count ? `key count: ${t.count}` : null,
+    t.difficulty != null ? `difficulty ${t.difficulty}/5 (our estimate)` : 'difficulty unknown — no confirmed method yet',
+    t.time ? `about ${t.time}` : null,
     t.missable ? 'possibly missable' : 'not missable',
     t.hidden ? 'hidden on PS5 until earned' : 'visible from the start',
   ].filter(Boolean);
+  const steps = Array.isArray(t.steps) && t.steps.length > 0
+    ? `<h3 class="steps-h">How to earn it</h3><ol class="steps">${t.steps.map((s) => `<li>${esc(s)}</li>`).join('')}</ol>`
+    : '';
   modalBody.innerHTML = concealed
     ? `${badge(t)}
        <h2 id="modal-name">Hidden trophy</h2>
@@ -262,6 +309,7 @@ function openDetail(t) {
        ${t.status === 'unconfirmed' ? '<p class="warn"><b>Method unconfirmed.</b> No guide has pinned down how this trophy unlocks yet — the description is the only solid fact. Treat any method you read elsewhere as a rumour until a cited guide confirms it.</p>' : ''}
        ${t.missable ? '<p class="warn"><b>Possibly missable.</b> This is the one trophy in the set that PowerPyx flags as potentially missable — see the missable watch list. Do the Chapter 1 balcony meditation before the chapter ends.</p>' : ''}
        <p class="guide">${esc(t.guide)}</p>
+       ${steps}
        <p class="source">${citationFor(t)}</p>`;
   backdrop.hidden = false;
 }
@@ -289,6 +337,7 @@ spoilerEl.addEventListener('change', () => {
   render();
 });
 
+document.getElementById('print').addEventListener('click', () => window.print());
 document.getElementById('export').addEventListener('click', () => {
   const payload = { game: 'Grand Theft Auto VI', earned: [...earned].sort((a, b) => a - b), exportedAt: new Date().toISOString() };
   const a = document.createElement('a');
@@ -327,6 +376,7 @@ document.getElementById('reset').addEventListener('click', () => {
 
 renderAuditStrip();
 renderSources();
+renderChecklist100();
 render();
 
 // Deep links, applied after the first render so the page is already built.

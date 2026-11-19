@@ -107,7 +107,7 @@ h1 .h1-sub { font-size: 20px; color: var(--muted); letter-spacing: 0; font-weigh
 
 /* Trophy grid */
 .list-head { margin-top: 20px; }
-.list-head h2, .roadmap h2, .watchlist h2, footer h2 { font-size: 22px; margin: 0 0 4px; }
+.list-head h2, .roadmap h2, .watchlist h2, .checklist100 h2, footer h2 { font-size: 22px; margin: 0 0 4px; }
 #count { color: var(--muted); font-size: 13px; }
 .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px; }
 .card {
@@ -138,6 +138,8 @@ h1 .h1-sub { font-size: 20px; color: var(--muted); letter-spacing: 0; font-weigh
 .tag.hidden-tag { color: var(--pink-soft); }
 .tag.stage-tag { color: var(--teal); border-color: #1f5b52; font-weight: 700; }
 .tag.count-tag { color: var(--gold); }
+.tag.diff-tag { color: var(--pink-soft); border-color: #5b2340; font-weight: 700; }
+.tag.time-tag { color: var(--teal); }
 .tag.unconfirmed-tag { color: var(--amber); border-color: #6b4d12; font-weight: 700; }
 .card .spoiler-note { color: var(--muted); font-size: 13.5px; font-style: italic; margin: 0; }
 .empty {
@@ -166,6 +168,32 @@ h1 .h1-sub { font-size: 20px; color: var(--muted); letter-spacing: 0; font-weigh
 .mini-src { color: var(--muted); font-size: 12px; }
 .watch-note { margin-top: 12px; font-size: 13.5px; color: var(--muted); }
 .watch-note b { color: var(--text); }
+
+/* 100% checklist table */
+.checklist100 { margin: 30px 0 8px; }
+.checklist100 .lede { color: var(--muted); margin: 0 0 14px; }
+.c100-table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; font-size: 13.5px; }
+.c100-table th, .c100-table td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.c100-table tr:last-child th, .c100-table tr:last-child td { border-bottom: 0; }
+.c100-table th { color: var(--teal); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; background: var(--panel-2); }
+.c100-table td { color: #d9d7ee; }
+.c100-table td.c100-need { color: var(--gold); font-weight: 700; white-space: nowrap; }
+.c100-table td b { color: var(--text); }
+
+/* Platinum path: ordered steps with live progress */
+.path { list-style: none; margin: 0 0 16px; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.path-step { display: flex; gap: 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 13px 16px; }
+.path-step.done { border-color: var(--teal); }
+.path-num {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  background: var(--pink); color: #fff; font-weight: 800; font-size: 15px;
+  display: flex; align-items: center; justify-content: center; margin-top: 2px;
+}
+.path-step.done .path-num { background: var(--teal); }
+.path-body h3 { margin: 0 0 2px; font-size: 15px; }
+.path-body p { margin: 4px 0 0; font-size: 13.5px; color: #d9d7ee; }
+.path-body .path-count { font-size: 12.5px; color: var(--muted); }
+.path-body .path-count b { color: var(--teal); }
 
 /* Roadmap */
 .roadmap { margin: 30px 0 8px; }
@@ -208,6 +236,10 @@ h1 .h1-sub { font-size: 20px; color: var(--muted); letter-spacing: 0; font-weigh
 .modal .desc { color: var(--muted); font-style: italic; margin: 0 0 10px; }
 .modal .keyfacts { font-size: 12.5px; color: var(--teal); margin: 0 0 12px; font-weight: 600; }
 .modal .guide { font-size: 15px; margin: 0 0 14px; }
+.modal .steps-h { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--teal); margin: 0 0 6px; }
+.modal .steps { margin: 0 0 14px; padding-left: 22px; font-size: 14.5px; }
+.modal .steps li { margin: 6px 0; }
+.modal .steps li::marker { color: var(--pink); font-weight: 700; }
 .modal .source { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
 .modal .source b { color: var(--teal); }
 .modal-close {
@@ -233,4 +265,13 @@ footer h2 { color: var(--text); }
   .grid { grid-template-columns: 1fr; }
   h1 { font-size: 30px; }
   h1 .h1-sub { font-size: 17px; }
+}
+
+@media print {
+  body { background: #fff; color: #111; }
+  .toolbar, .modal-backdrop, #print { display: none !important; }
+  .wrap { max-width: none; }
+  .card, .stage, .watch-card, .path-step { break-inside: avoid; border-color: #999; background: #fff; }
+  .card .desc, .card .guide, .stage p, .watch-card p, .path-body p { color: #333; }
+  a { color: #0645ad; }
 }
